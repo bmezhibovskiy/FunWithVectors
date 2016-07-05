@@ -141,12 +141,25 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GameModule.h" />
+    <ClInclude Include="GameObject.h" />
+    <ClInclude Include="PlayerControlsModule.h" />
+    <ClInclude Include="GraphicsModule.h" />
+    <ClInclude Include="InputManager.h" />
+    <ClInclude Include="LineSegment2d.h" />
+    <ClInclude Include="PhysicsModule.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Vector3d.h" />
     <ClInclude Include="Win32Project2.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="GameModule.cpp" />
+    <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="PlayerControlsModule.cpp" />
+    <ClCompile Include="GraphicsModule.cpp" />
+    <ClCompile Include="InputManager.cpp" />
+    <ClCompile Include="PhysicsModule.cpp" />
     <ClCompile Include="Vector3d.cpp" />
     <ClCompile Include="Win32Project2.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>

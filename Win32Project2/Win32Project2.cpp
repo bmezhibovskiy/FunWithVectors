@@ -7,7 +7,12 @@ using namespace Gdiplus;
 #include <vector>
 using namespace std;
 
+#include "InputManager.h"
 #include "Vector3d.h"
+#include "GameObject.h"
+#include "PlayerControlsModule.h"
+#include "PhysicsModule.h"
+#include "GraphicsModule.h"
 
 bool quit = false;
 
@@ -18,75 +23,17 @@ LONGLONG frameTime = (LONGLONG)(1000000 / 16);
 
 RECT window = { 100,100,600,600 };
 
-bool previousKeys[255] = { false };
-bool pressedKeys[255] = { false };
-bool triggeredKeys[255] = { false };
+GameObject player;
 
-struct LineSegment2d {
-	Vector3d start, end;
-	LineSegment2d(double x1, double y1, double x2, double y2) : start(x1, y1, 0), end(x2, y2, 0) {}
-};
-
-struct Player {
-	Vector3d position;
-	Vector3d velocity;
-	Vector3d acceleration;
-	Player() : position(0.5, 0.5, 0.0), velocity(0, 0, 0), acceleration(0, 0, 0) {}
-};
-
-vector<LineSegment2d> linesToDraw;
-Player player;
-
-void updateInput() {
-	for (int i = 0; i < 255; ++i) {
-		previousKeys[i] = pressedKeys[i];
-		pressedKeys[i] = GetAsyncKeyState(i) & 0x8000;
-		triggeredKeys[i] = (previousKeys[i] == false && pressedKeys[i] == true);
-	}
+void initializeGame() {
+	player = GameObject();
+	player.addModule(PlayerControlsModule(&player));
+	player.addModule(PhysicsModule(&player, Vector3d(0.5, 0.5, 0.0)));
+	player.addModule(GraphicsModule(&player));
 }
 
 void update() {
-
-	double speed = 0.0025;
-	player.acceleration = Vector3d(0, 0, 0);
-	if (pressedKeys[VK_UP]) {
-		player.acceleration = player.acceleration + Vector3d(0, -speed, 0);
-	}
-	if (pressedKeys[VK_DOWN]) {
-		player.acceleration = player.acceleration + Vector3d(0, speed, 0);
-	}
-	if (pressedKeys[VK_LEFT]) {
-		player.acceleration = player.acceleration + Vector3d(-speed, 0, 0);
-	}
-	if (pressedKeys[VK_RIGHT]) {
-		player.acceleration = player.acceleration + Vector3d(speed, 0, 0);
-	}
-
-	double epsilon = 1e-8;
-	if (player.velocity.lengthSquared() > epsilon) {
-		double playerFriction = -0.2;
-		Vector3d friction = player.velocity * playerFriction;
-		player.acceleration = player.acceleration + friction;
-	}
-	else {
-		player.velocity = Vector3d(0, 0, 0);
-	}
-
-	player.velocity = player.velocity + player.acceleration;
-	player.position = player.position + player.velocity;
-
-	if (player.velocity.lengthSquared() > 0.0) {
-		Vector3d nextFramePosition = player.position + (player.velocity.normalized() * 0.025);
-		LineSegment2d playerRepresentation = LineSegment2d(player.position.x, player.position.y, nextFramePosition.x, nextFramePosition.y);
-		linesToDraw.push_back(playerRepresentation);
-	}
-	else {
-		double size = 0.01;
-		LineSegment2d playerRepresentationA = LineSegment2d(player.position.x-size, player.position.y, player.position.x+size, player.position.y);
-		LineSegment2d playerRepresentationB = LineSegment2d(player.position.x, player.position.y-size, player.position.x, player.position.y+size);
-		linesToDraw.push_back(playerRepresentationA);
-		linesToDraw.push_back(playerRepresentationB);
-	}
+	player.update();	
 }
 
 LARGE_INTEGER getCurrentMicros() {
@@ -128,11 +75,12 @@ VOID OnPaint(HDC hdc)
 	Graphics g(hdc);
 	g.Clear(Color(255, 255, 255));
 	drawBorder(g);
-	size_t numLines = linesToDraw.size();
+
+	GraphicsModule* playerGraphics = dynamic_cast<GraphicsModule*>(player.moduleForType(GameModuleType_Graphics));
+	size_t numLines = playerGraphics->linesToDraw.size();
 	for(size_t i = 0; i < numLines; ++i) {
-		drawLine(g, Color(50, 60, 200), linesToDraw[i]);
+		drawLine(g, Color(50, 60, 200), playerGraphics->linesToDraw[i]);
 	}
-	linesToDraw.clear();
 }
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -182,17 +130,15 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
 	clientHeight = clientRect.bottom - clientRect.top;
 	clientWidth = clientRect.right - clientRect.left;
 
-	while (!quit) {
+	initializeGame();
 
-		
+	while (!quit) {
 
 		LARGE_INTEGER currentMicros = getCurrentMicros();
 		LONGLONG diff = currentMicros.QuadPart - lastFrameMicroseconds.QuadPart;
 		if (diff > frameTime) {
 			lastFrameMicroseconds = currentMicros;
-
-			updateInput();
-
+			
 			update();
 
 			InvalidateRect(hWnd, NULL, FALSE);
