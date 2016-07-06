@@ -23,17 +23,17 @@ LONGLONG frameTime = (LONGLONG)(1000000 / 16);
 
 RECT window = { 100,100,600,600 };
 
-GameObject player;
+GameObject *player;
 
 void initializeGame() {
-	player = GameObject();
-	player.addModule(PlayerControlsModule(&player));
-	player.addModule(PhysicsModule(&player, Vector3d(0.5, 0.5, 0.0)));
-	player.addModule(GraphicsModule(&player));
+	player = new GameObject();
+	player->addModule(new PlayerControlsModule(player));
+	player->addModule(new PhysicsModule(player, Vector3d(0.5, 0.5, 0.0)));
+	player->addModule(new GraphicsModule(player));
 }
 
 void update() {
-	player.update();	
+	player->update();
 }
 
 LARGE_INTEGER getCurrentMicros() {
@@ -76,10 +76,14 @@ VOID OnPaint(HDC hdc)
 	g.Clear(Color(255, 255, 255));
 	drawBorder(g);
 
-	GraphicsModule* playerGraphics = dynamic_cast<GraphicsModule*>(player.moduleForType(GameModuleType_Graphics));
-	size_t numLines = playerGraphics->linesToDraw.size();
-	for(size_t i = 0; i < numLines; ++i) {
-		drawLine(g, Color(50, 60, 200), playerGraphics->linesToDraw[i]);
+	if (player != NULL) {
+		GraphicsModule* playerGraphics = dynamic_cast<GraphicsModule*>(player->moduleForType(GameModuleType_Graphics));
+		if (playerGraphics != NULL) {
+			size_t numLines = playerGraphics->linesToDraw.size();
+			for (size_t i = 0; i < numLines; ++i) {
+				drawLine(g, Color(50, 60, 200), playerGraphics->linesToDraw[i]);
+			}
+		}
 	}
 }
 
@@ -151,7 +155,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
 	}
 
 	GdiplusShutdown(gdiplusToken);
-	return msg.wParam;
+	return (int)(msg.wParam);
 }  // WinMain
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message,

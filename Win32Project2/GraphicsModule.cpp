@@ -1,7 +1,7 @@
 #include "GraphicsModule.h"
 #include "PhysicsModule.h"
 
-GraphicsModule::GraphicsModule(GameObject* owner) : GameModule(owner, GameModuleType_Unspecified) {}
+GraphicsModule::GraphicsModule(GameObject* owner) : GameModule(owner, GameModuleType_Graphics) {}
 
 void GraphicsModule::update() {
 

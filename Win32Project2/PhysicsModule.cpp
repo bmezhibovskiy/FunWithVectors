@@ -1,6 +1,10 @@
 #include "PhysicsModule.h"
+#include "GameObject.h"
+#include "Vector3d.h"
 
 double epsilon = 1e-8;
+
+PhysicsModule::PhysicsModule(GameObject* owner, Vector3d position) : GameModule(owner, GameModuleType_Physics), position(position), velocity(0, 0, 0), acceleration(0, 0, 0) {}
 
 void PhysicsModule::update() {
 	if (velocity.lengthSquared() > epsilon) {
