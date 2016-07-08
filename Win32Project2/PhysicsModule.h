@@ -4,9 +4,16 @@
 
 class PhysicsModule : public GameModule {
 public:
-	Vector3d position;
-	Vector3d velocity;
+
+	//Input
+	double frictionCoefficient;
 	Vector3d acceleration;
+
+	//Output
+	Vector3d velocity;
+	Vector3d position;
+
+	
 	PhysicsModule(GameObject* owner, Vector3d position);
 
 	void update();

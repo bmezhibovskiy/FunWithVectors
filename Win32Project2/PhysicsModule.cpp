@@ -4,12 +4,12 @@
 
 double epsilon = 1e-8;
 
-PhysicsModule::PhysicsModule(GameObject* owner, Vector3d position) : GameModule(owner, GameModuleType_Physics), position(position), velocity(0, 0, 0), acceleration(0, 0, 0) {}
+PhysicsModule::PhysicsModule(GameObject* owner, Vector3d position) : 
+	GameModule(owner, GameModuleType_Physics), position(position), velocity(0, 0, 0), acceleration(0, 0, 0), frictionCoefficient(0) {}
 
 void PhysicsModule::update() {
 	if (velocity.lengthSquared() > epsilon) {
-		double playerFriction = -0.2; //TODO: Pull friction out
-		Vector3d friction = velocity * playerFriction;
+		Vector3d friction = velocity * frictionCoefficient;
 		acceleration = acceleration + friction;
 	}
 	else {

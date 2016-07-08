@@ -143,6 +143,9 @@
   <ItemGroup>
     <ClInclude Include="GameModule.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="Javelin.h" />
+    <ClInclude Include="ObjectManager.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerControlsModule.h" />
     <ClInclude Include="GraphicsModule.h" />
     <ClInclude Include="InputManager.h" />
@@ -156,6 +159,9 @@
   <ItemGroup>
     <ClCompile Include="GameModule.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="Javelin.cpp" />
+    <ClCompile Include="ObjectManager.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerControlsModule.cpp" />
     <ClCompile Include="GraphicsModule.cpp" />
     <ClCompile Include="InputManager.cpp" />

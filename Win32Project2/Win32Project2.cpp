@@ -8,11 +8,12 @@ using namespace Gdiplus;
 using namespace std;
 
 #include "InputManager.h"
+#include "ObjectManager.h"
 #include "Vector3d.h"
-#include "GameObject.h"
-#include "PlayerControlsModule.h"
-#include "PhysicsModule.h"
+#include "LineSegment2d.h"
 #include "GraphicsModule.h"
+#include "GameObject.h"
+#include "Player.h"
 
 bool quit = false;
 
@@ -23,17 +24,13 @@ LONGLONG frameTime = (LONGLONG)(1000000 / 16);
 
 RECT window = { 100,100,600,600 };
 
-GameObject *player;
-
 void initializeGame() {
-	player = new GameObject();
-	player->addModule(new PlayerControlsModule(player));
-	player->addModule(new PhysicsModule(player, Vector3d(0.5, 0.5, 0.0)));
-	player->addModule(new GraphicsModule(player));
+	ObjectManager::getInstance()->addObject(new Player(Vector3d(0.5,0.5,0.0)));
 }
 
 void update() {
-	player->update();
+	InputManager::getInstance()->update();
+	ObjectManager::getInstance()->update();
 }
 
 LARGE_INTEGER getCurrentMicros() {
@@ -76,12 +73,16 @@ VOID OnPaint(HDC hdc)
 	g.Clear(Color(255, 255, 255));
 	drawBorder(g);
 
-	if (player != NULL) {
-		GraphicsModule* playerGraphics = dynamic_cast<GraphicsModule*>(player->moduleForType(GameModuleType_Graphics));
-		if (playerGraphics != NULL) {
-			size_t numLines = playerGraphics->linesToDraw.size();
-			for (size_t i = 0; i < numLines; ++i) {
-				drawLine(g, Color(50, 60, 200), playerGraphics->linesToDraw[i]);
+	size_t numObjects = ObjectManager::getInstance()->objects.size();
+	for (size_t i = 0; i < numObjects; ++i) {
+		GameObject* object = ObjectManager::getInstance()->objects[i];
+		if (object != NULL) {
+			GraphicsModule* playerGraphics = dynamic_cast<GraphicsModule*>(object->moduleForType(GameModuleType_Graphics));
+			if (playerGraphics != NULL) {
+				size_t numLines = playerGraphics->linesToDraw.size();
+				for (size_t i = 0; i < numLines; ++i) {
+					drawLine(g, Color(50, 60, 200), playerGraphics->linesToDraw[i]);
+				}
 			}
 		}
 	}

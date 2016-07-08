@@ -4,6 +4,7 @@ class Vector3d {
 public:
 	double x, y, z;
 
+	Vector3d::Vector3d();
 	Vector3d::Vector3d(double x, double y, double z);
 
 	Vector3d Vector3d::operator+(const Vector3d& other);

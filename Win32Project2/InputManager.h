@@ -2,11 +2,12 @@
 #include "GameModule.h"
 
 class InputManager {
+	static InputManager* instance;
+	InputManager();
 	bool previousKeys[255] = { false };
 	bool pressedKeys[255] = { false };
-	bool triggeredKeys[255] = { false };
 public:
-	InputManager();
+	static InputManager* getInstance();
 	void update();
 	bool keyPressed(int keyCode);
 	bool keyTriggered(int keyCode);
