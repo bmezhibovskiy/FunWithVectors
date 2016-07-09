@@ -5,6 +5,8 @@
 class PhysicsModule : public GameModule {
 public:
 
+	static const double epsilon;
+
 	//Input
 	double frictionCoefficient;
 	Vector3d acceleration;
