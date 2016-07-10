@@ -2,7 +2,7 @@
 
 class Vector3d {
 public:
-	double x, y, z;
+	double x, y, z, w;
 
 	Vector3d::Vector3d();
 	Vector3d::Vector3d(double x, double y, double z);

@@ -1,5 +1,6 @@
 #include "GraphicsModule.h"
 #include "PhysicsModule.h"
+#include "Matrix4x4.h"
 
 GraphicsModule::GraphicsModule(GameObject* owner) : GameModule(owner, GameModuleType_Graphics) {}
 
@@ -18,11 +19,14 @@ void GraphicsModule::update() {
 	for (size_t i = 0; i < numLines; ++i) {
 		LineSegment2d c = objectLines[i];
 		//1) Rotate
-		Vector3d worldSpaceStart = Vector3d(c.start.x*cos(t) - c.start.y*sin(t), c.start.x*sin(t) - c.start.y*cos(t), 0);
-		Vector3d worldSpaceEnd = Vector3d(c.end.x*cos(t) - c.end.y*sin(t), c.end.x*sin(t) - c.end.y*cos(t), 0);
+		Matrix4x4 rotation = Matrix4x4::rotationZ(t);		
 		//2) Translate
-		worldSpaceStart = worldSpaceStart + physics->position;
-		worldSpaceEnd = worldSpaceEnd + physics->position;
+		Matrix4x4 translation = Matrix4x4::translate(physics->position);
+
+		Matrix4x4 transformation = translation * rotation;
+
+		Vector3d worldSpaceStart = transformation * c.start;
+		Vector3d worldSpaceEnd = transformation * c.end;
 		LineSegment2d worldSpaceLine = LineSegment2d(worldSpaceStart.x, worldSpaceStart.y, worldSpaceEnd.x, worldSpaceEnd.y);
 		linesToDraw.push_back(worldSpaceLine);
 	}

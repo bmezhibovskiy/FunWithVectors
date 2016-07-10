@@ -144,6 +144,7 @@
     <ClInclude Include="GameModule.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Javelin.h" />
+    <ClInclude Include="Matrix4x4.h" />
     <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerControlsModule.h" />
@@ -160,6 +161,7 @@
     <ClCompile Include="GameModule.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Javelin.cpp" />
+    <ClCompile Include="Matrix4x4.cpp" />
     <ClCompile Include="ObjectManager.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerControlsModule.cpp" />

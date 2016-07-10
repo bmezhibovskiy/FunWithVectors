@@ -3,7 +3,7 @@
 
 Vector3d::Vector3d() : Vector3d(0, 0, 0) {}
 
-Vector3d::Vector3d(double x, double y, double z) : x(x), y(y), z(z) {}
+Vector3d::Vector3d(double x, double y, double z) : x(x), y(y), z(z), w(1) {}
 
 Vector3d Vector3d::operator+(const Vector3d& other) {
 	return Vector3d(x + other.x, y + other.y, z + other.z);
