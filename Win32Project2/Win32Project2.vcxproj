@@ -141,8 +141,10 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GameCamera.h" />
     <ClInclude Include="GameModule.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="GraphicsManager.h" />
     <ClInclude Include="Javelin.h" />
     <ClInclude Include="Matrix4x4.h" />
     <ClInclude Include="ObjectManager.h" />
@@ -158,8 +160,10 @@
     <ClInclude Include="Win32Project2.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="GameCamera.cpp" />
     <ClCompile Include="GameModule.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="GraphicsManager.cpp" />
     <ClCompile Include="Javelin.cpp" />
     <ClCompile Include="Matrix4x4.cpp" />
     <ClCompile Include="ObjectManager.cpp" />

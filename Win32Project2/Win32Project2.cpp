@@ -9,6 +9,7 @@ using namespace std;
 
 #include "InputManager.h"
 #include "ObjectManager.h"
+#include "GraphicsManager.h"
 #include "Vector3d.h"
 #include "LineSegment2d.h"
 #include "GraphicsModule.h"
@@ -20,7 +21,7 @@ bool quit = false;
 LONG clientWidth, clientHeight;
 
 LARGE_INTEGER lastFrameMicroseconds = { 0 };
-LONGLONG frameTime = (LONGLONG)(1000000 / 16);
+LONGLONG frameTime = (LONGLONG)(1000000 / 24);
 
 RECT window = { 100,100,600,600 };
 
@@ -54,38 +55,10 @@ LARGE_INTEGER getCurrentMicros() {
 	return Time;
 }
 
-void drawBorder(Graphics& g) {
-	Pen pen(Color(0, 0, 0), 2.0f);
-	g.DrawLine(&pen, 100, 100, 600, 100);
-	g.DrawLine(&pen, 100, 600, 600, 600);
-	g.DrawLine(&pen, 100, 100, 100, 600);
-	g.DrawLine(&pen, 600, 100, 600, 600);
-}
-
-void drawLine(Graphics& g, Color c, LineSegment2d ls) {
-	Pen pen(c, 3.0f);
-	g.DrawLine(&pen, (INT)(ls.start.x * 500 + 100), (INT)(ls.start.y * 500 + 100), (INT)(ls.end.x * 500 + 100), (INT)(ls.end.y * 500 + 100));
-}
-
 VOID OnPaint(HDC hdc)
 {
 	Graphics g(hdc);
-	g.Clear(Color(255, 255, 255));
-	drawBorder(g);
-
-	size_t numObjects = ObjectManager::getInstance()->objects.size();
-	for (size_t i = 0; i < numObjects; ++i) {
-		GameObject* object = ObjectManager::getInstance()->objects[i];
-		if (object != NULL) {
-			GraphicsModule* playerGraphics = dynamic_cast<GraphicsModule*>(object->moduleForType(GameModuleType_Graphics));
-			if (playerGraphics != NULL) {
-				size_t numLines = playerGraphics->linesToDraw.size();
-				for (size_t i = 0; i < numLines; ++i) {
-					drawLine(g, Color(50, 60, 200), playerGraphics->linesToDraw[i]);
-				}
-			}
-		}
-	}
+	GraphicsManager::getInstance()->update(g);	
 }
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);

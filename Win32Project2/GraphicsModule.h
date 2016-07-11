@@ -2,19 +2,16 @@
 #include "GameModule.h"
 #include "LineSegment2d.h"
 #include <vector>
+#include <objidl.h>
+#include <gdiplus.h>
 
 class GraphicsModule: public GameModule {
 public:
 	GraphicsModule(GameObject* owner);
 	
-	//Input
 	std::vector<LineSegment2d> objectLines; //In object space, anchor at 0,0
-
-	//Output
-	std::vector<LineSegment2d> linesToDraw;
-
-
-
+	Gdiplus::Color color;
+	
 	void update();
 
 };
