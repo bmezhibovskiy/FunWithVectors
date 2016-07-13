@@ -8,7 +8,7 @@ using namespace Gdiplus;
 
 GraphicsManager* GraphicsManager::instance = nullptr;
 
-GraphicsManager::GraphicsManager() : camera(Vector3d(0.5,0.5,0.5), Vector3d(0,0,-1)) {}
+GraphicsManager::GraphicsManager() : camera(Vector3d(0.0,0.0,0.5), Vector3d(0,0,-1)) {}
 
 GraphicsManager* GraphicsManager::getInstance() {
 	if (instance == nullptr) {
@@ -35,8 +35,7 @@ void GraphicsManager::update(Graphics& g) {
 	g.Clear(Color(255, 255, 255));
 
 	drawBorder(g); //TODO: Make the border walls objects?
-
-
+	
 	size_t numObjects = ObjectManager::getInstance()->objects.size();
 	for (size_t i = 0; i < numObjects; ++i) {
 		GameObject* object = ObjectManager::getInstance()->objects[i];
@@ -57,15 +56,15 @@ void GraphicsManager::update(Graphics& g) {
 					//2) Translate
 					Matrix4x4 translation = Matrix4x4::translate(physics->position);
 
-					Matrix4x4 transformation = translation * rotation;
+					Matrix4x4 objToWorld = translation * rotation;
+					Matrix4x4 worldToCamera = camera.viewMatrix();
 
-					Vector3d worldSpaceStart = transformation * c.start;
-					Vector3d worldSpaceEnd = transformation * c.end;
-					LineSegment2d worldSpaceLine = LineSegment2d(worldSpaceStart.x, worldSpaceStart.y, worldSpaceEnd.x, worldSpaceEnd.y);
+					Matrix4x4 transformation = worldToCamera * objToWorld;
 
-					LineSegment2d finalLine = worldSpaceLine;
-
-
+					Vector3d cameraSpaceStart = transformation * c.start;
+					Vector3d cameraSpaceEnd = transformation * c.end;
+					LineSegment2d finalLine = LineSegment2d(cameraSpaceStart.x, cameraSpaceStart.y, cameraSpaceEnd.x, cameraSpaceEnd.y);
+					
 					drawLine(g, graphics->color, finalLine);
 				}
 			}

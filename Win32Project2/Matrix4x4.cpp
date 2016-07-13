@@ -109,8 +109,9 @@ Matrix4x4 Matrix4x4::inverse() {
 	if ( !isInvertible() ) {
 		throw "Can't invert a matrix that is not invertible!";
 	}
-	//TODO: Finish this
-	return Matrix4x4::identity();
+	
+	
+	return (1.0 / determinant()) * adjoint();
 }
 
 double Matrix4x4::determinant() {
@@ -145,4 +146,50 @@ double Matrix4x4::determinant() {
 		matrix[0][3] * matrix[1][0] * matrix[2][1] * matrix[3][2] -
 		matrix[0][3] * matrix[1][1] * matrix[2][2] * matrix[3][0] -
 		matrix[0][3] * matrix[1][2] * matrix[2][0] * matrix[3][1];
+}
+
+Matrix4x4 Matrix4x4::cofactor() {
+	Matrix4x4 result = Matrix4x4::identity();
+	size_t dim = matrix.size();
+	for (size_t row = 0; row < dim; ++row) {
+		for (size_t col = 0; col < dim; ++col) {
+
+			//Creating the smaller 3x3 matrix from the rows and cols that are not [row] and [col]
+			Matrix4x4 smallerMatrix = Matrix4x4::identity();
+			smallerMatrix.matrix.clear();
+			for (size_t i = 0; i < dim; ++i) {
+				vector<double> smallerMatrixRow;
+				if (i != row) {
+					for (size_t j = 0; j < dim; ++j) {
+						if (j != col) {
+							smallerMatrixRow.push_back(matrix[i][j]);
+						}
+					}
+					smallerMatrixRow.push_back(0);
+					smallerMatrix.matrix.push_back(smallerMatrixRow);
+				}
+			}
+			//the Dummy row pads our matrix so that the determinant is the same on the inner 3x3 that we care about.
+			vector<double> dummyRow;
+			dummyRow.push_back(0);
+			dummyRow.push_back(0);
+			dummyRow.push_back(0);
+			dummyRow.push_back(1);
+			smallerMatrix.matrix.push_back(dummyRow);
+			//
+
+			double sign = 1.0;
+			if (row % 2 == 0 && col % 2 == 1 || row % 2 == 1 && col % 2 == 0) {
+				sign = -1.0;
+			}
+
+			result.matrix[row][col] = sign * smallerMatrix.determinant();
+
+		}
+	}
+	return result;
+}
+
+Matrix4x4 Matrix4x4::adjoint() {
+	return cofactor().transpose();
 }

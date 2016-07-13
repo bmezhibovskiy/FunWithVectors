@@ -5,9 +5,9 @@
 GameCamera::GameCamera(Vector3d position, Vector3d direction) : position(position), direction(direction) {}
 
 Matrix4x4 GameCamera::cameraTransformationMatrix() {
-	return Matrix4x4::translate(position);
+	return Matrix4x4::translate(position); //TODO: Rotate based on direction
 }
 
 Matrix4x4 GameCamera::viewMatrix() {
-	return cameraTransformationMatrix();
+	return cameraTransformationMatrix().inverse();
 }

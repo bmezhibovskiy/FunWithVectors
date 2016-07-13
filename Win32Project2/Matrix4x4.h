@@ -19,6 +19,8 @@ public:
 	Matrix4x4 transpose();
 	double determinant();
 	bool isInvertible();
+	Matrix4x4 cofactor();
+	Matrix4x4 adjoint();
 	Matrix4x4 inverse();
 
 	friend Matrix4x4 operator*(double s, const Matrix4x4& m);

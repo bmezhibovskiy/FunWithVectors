@@ -8,5 +8,4 @@ public:
 	GameCamera(Vector3d position, Vector3d direction);
 	Matrix4x4 cameraTransformationMatrix();
 	Matrix4x4 viewMatrix();
-
 };
